@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.1//EN" "http://jakarta.apache.org/struts/dtds/struts-config_1_1.dtd">
+<struts-config>
+    <form-beans>
+    	<form-bean name="MemberformData" type="com.training.formbean.MemberForm"/>
+    	<form-bean name="BackendsformData" type="com.training.formbean.GoodForm"/>
+        <form-bean name="BackendformData" type="com.training.formbean.GoodsForm"/>
+        <form-bean name="FrontendformData" type="com.training.formbean.MemberForm"/>
+        <form-bean name="ParameterformData" type="com.training.formbean.ParameterForm"/>
+    </form-beans>
+    <action-mappings>   
+     	 <action path="/LoginAction" type="com.training.action.LoginAction" parameter="action" name="MemberformData">
+            <forward name="success" path="/LoginAction.do?action=LoginDefault" redirect="true"/>
+            <forward name="fail" path="/Login.jsp"/>
+            <forward name="login" path="/Login.jsp" redirect="true"/>
+            <forward name="Default" path="/WEB-INF/view/VM_Backend_Goods.jsp"/>
+        </action>
+        <action path="/BackendAction" type="com.training.action.BackendAction" 
+        		parameter="action" name="BackendsformData">
+            <forward name="goodsView" path="/WEB-INF/view/VM_Backend_Goods.jsp" />
+            <forward name="goodssalereportView" path="/WEB-INF/view/VM_Backend_GoodsSaleReport.jsp" />
+        </action>
+         <action path="/FrontendAction" type="com.training.action.FrontendAction" 
+        		parameter="action" name="FrontendformData">
+            <forward name="MemberGoodsListView" path="/WEB-INF/view/VendingMachine.jsp" />
+            <forward name="MemberGoodsPaymentView" path="/WEB-INF/view/VendingMachinePayment.jsp" />
+        </action>
+        <action path="/ParameterAction" type="com.training.action.ParameterAction" parameter="action" name="ParameterformData">
+        </action>  
+        
+    </action-mappings>
+</struts-config>
