@@ -25,7 +25,7 @@
 <script src="script/bootstrap4-toggle.min.js"></script>
 <script src="script/bootstrap-slidemenu.js"></script>
 <script src="script/pagination.js"></script>
-<script src="js/function.js"></script>
+<script src="script/function.js"></script>
 <script src="pagejs/VM_Backend_Goods.js"></script>
 
 <title>販賣機-後臺</title>
@@ -205,7 +205,8 @@
 					</div>
 					<!-- Detail -->
 					<div class="divDetailPanel">
-						<form id="frmData" name="frmData" method="post" autocomplete="off">
+						<form id="frmData" name="frmData" method="post" autocomplete="off"
+							enctype="multipart/form-data">
 							<input type="hidden" id="hidPrimaryID" name="hidPrimaryID">
 							<div class="card">
 								<div class=" card-header">

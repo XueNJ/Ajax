@@ -8,7 +8,11 @@
 		<servlet-class>org.apache.struts.action.ActionServlet</servlet-class>
 		<init-param>
 			<param-name>GoodsImgPath</param-name>
-			<param-value>/DrinksImage</param-value>
+			<param-value>DrinksImage</param-value>
+		</init-param>
+		<init-param>
+			<param-name>MainGoodsImgPath</param-name>
+			<param-value>C:\home\VendingMachine\DrinksImage</param-value>
 		</init-param>
 		<init-param>
 			<param-name>config</param-name>

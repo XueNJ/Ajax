@@ -42,7 +42,7 @@ function PageAction(_strAction, _frmForm) {
 			}
 			break;
 		case "Remove":
-			showModalMessage('', '確認刪除資料?', 'Cancel', 'RemoveAction(document.forms.frmData.hidPrimaryID.value)');
+			showModalMessage('', '確認刪除資料?', 'Cancel', 'RemoveAction(document.forms.frmData)');
 			break;
 		case "Cancel":
 			switch (strActionMode) {
@@ -221,10 +221,9 @@ function SaveAction(_fromData, _ActionMode) {
 /// 刪除
 /// </summary>
 /// <param name="_strID">參數</param>
-function RemoveAction(_strID) {
+function RemoveAction(_fromData) {
 	let objDeferred = $.Deferred(); // 延遲物件
-	let formData = new FormData();
-	formData.append('ID', _strID);
+	let formData = new FormData(_fromData);
 	RemoveData(formData); // 資料處理
 	objDeferred.resolve(); // 已解決
 	return objDeferred.promise();
@@ -333,7 +332,7 @@ function GetDataDetail(objFromData) {
 		success: function(data) {
 			if (data[0].totalCount === 1) {
 				$("#hidPrimaryID").val(data[0].listGoods[0].goodsID); // hid ID
-				$("#imgGoodsImage").attr("src", "imgs/" + (data[0].listGoods[0].goodsImageName === "" ? "nothing.jpg" : data[0].listGoods[0].goodsImageName)); // 圖片位置
+				$("#imgGoodsImage").attr("src", data[0].listGoods[0].strImagePath); // 圖片位置
 				$("#txtGoodsID").val(data[0].listGoods[0].goodsID); // ID
 				$("#txtGoodsName").val(data[0].listGoods[0].goodsName); // 商品名稱
 				$("#txtGoodsPrice").val(data[0].listGoods[0].goodsPrice); // 商品價格
@@ -461,7 +460,7 @@ function AddData(objFromData) {
 /// <param name="strJson">JSON</param>
 function RemoveData(objFromData) {
 	let objDeferred = $.Deferred(); // 延遲物件
-	let strAJAXUrl = 'BackendAction.do?'; // Post Path
+	let strAJAXUrl = 'BackendAction.do?action=deleteGoods'; // Post Path
 	let objData = objFromData; // form Data
 	let strDataType = 'json';
 	let strType = 'POST';
@@ -482,25 +481,27 @@ function RemoveData(objFromData) {
 		processData: boolProcessData, // required
 		mimeType: strMimeType,
 		success: function(data) {
-			strResult = data[0].resultMessage.strResult;
-			strMessage = data[0].resultMessage.strMessage;
-			strMessage = data[0].data[0].resultMessage.strErrorMessage;
+			strResult = data[0].strResult;
+			strMessage = data[0].strMessage;
+			strMessage = data[0].strErrorMessage;
 			switch (strResult) {
 				case "S":
-					$("#tblDataList_" + data[0].ID).empty(); // 清除該列資料
-					strModelStatus = 'Success'; // 告警狀態
+					strMessage = data[0].strMessage;
+					strModelStatus = 'Success';
 					break;
 				case "E":
-					strModelStatus = 'Error'; // 告警狀態
+					strMessage = data[0].strErrorMessage;
+					strModelStatus = 'Error';
 					break;
 			}
+			showModalMessage('', strMessage, strModelStatus); // 告警視窗
 		},
 		error: function() {
 			strMessage = '系統錯誤訊息。';
 		},
 		complete: function() {
-			setPageStatus('Cancel');
-			showModalMessage('', strMessage, strModelStatus); // 告警視窗
+			// setPageStatus('Cancel');
+			ViewListAction(document.forms.frmSearch);
 		}
 	});
 	return objDeferred.promise();

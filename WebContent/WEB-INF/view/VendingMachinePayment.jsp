@@ -25,7 +25,7 @@
 <script src="script/bootstrap4-toggle.min.js"></script>
 <script src="script/bootstrap-slidemenu.js"></script>
 <script src="script/pagination.js"></script>
-<script src="js/function.js"></script>
+<script src="script/function.js"></script>
 <script type="text/javascript" src="pagejs/VendingMachinePayment.js"></script>
 <title>販賣機</title>
 </head>
@@ -47,7 +47,7 @@
 					<!-- 特價品 -->
 					<div class="py-5 text-center">
 						<div style="height: 400px">
-							<img class="d-block mx-auto mb-4" src="DrinksImage/0712.jpg"
+							<img class="d-block mx-auto mb-4" src="imgs/0712.jpg"
 								alt="" width="80%" height="80%">
 						</div>
 						<h2>歡迎光臨賣場</h2>

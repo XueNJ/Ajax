@@ -127,7 +127,7 @@ function GetDataList(objFromData, boolPagination) {
 						"</div>" +
 						"<div class=\"card-body\">" +
 						"<div style=\"height:210px\">" +
-						"<img class=\"bd-placeholder-img card-img-top\"src=\"DrinksImage/" + data[0].listGoods[i].goodsImageName + "\" height=\"100%\">" +
+						"<img class=\"bd-placeholder-img card-img-top\"src=\"" + data[0].listGoods[i].strImagePath + "\" height=\"100%\">" +
 						"</div>" +
 						"<ul class=\"list-unstyled mt-3 mb-4\">" +
 						"<li>價格:" + data[0].listGoods[i].goodsPrice + "元/(庫存:" + data[0].listGoods[i].goodsQuantity + ")</li>" +

@@ -24,7 +24,7 @@
 <script src="script/bootstrap4-toggle.min.js"></script>
 <script src="script/bootstrap-slidemenu.js"></script>
 <script src="script/pagination.js"></script>
-<script src="js/function.js"></script>
+<script src="script/function.js"></script>
 <script src="pagejs/VM_Backend_GoodsSaleReport.js"></script>
 
 <title>販賣機-後臺</title>

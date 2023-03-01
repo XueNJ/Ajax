@@ -41,18 +41,13 @@ function PageAction(_strAction) {
 /// <param name="_fromData">參數</param>
 function SaveAction(_fromData, _ActionMode) {
 	let objDeferred = $.Deferred(); // 延遲物件
-	showPageLoading();
-	setTimeout(function() {
-		let formData = new FormData(_fromData);
-		switch (_ActionMode) {
-			case "Add":
-				formData.append('ckbStatus', $("#ckbStatus").val()); // add checkbox
-				AddData(formData);
-				break;
-		}
-		objDeferred.resolve(); // 已解決
-	}, 500);
-	removePageLoading();
+	let formData = new FormData(_fromData);
+	switch (_ActionMode) {
+		case "Add":
+			formData.append('ckbStatus', $("#ckbStatus").val()); // add checkbox
+			AddData(formData);
+			break;
+	}
 	return objDeferred.promise();
 }
 
@@ -129,7 +124,6 @@ function AddData(objFromData) {
 		complete: function() {
 		}
 	});
-	removePageLoading();
 	return objDeferred.promise();
 }
 
