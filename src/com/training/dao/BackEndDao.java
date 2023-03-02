@@ -16,6 +16,7 @@ import com.training.model.Orders;
 import com.training.model.ResultMessage;
 import com.training.vo.voGoods;
 import com.training.vo.voGoodsAdd;
+import com.training.vo.voGoodsDelete;
 import com.training.vo.voGoodsUpdate;
 import com.training.vo.voGoodsOrder;
 
@@ -41,16 +42,16 @@ public class BackEndDao {
 	 * 
 	 * @return GoodsLIst
 	 */
-	public Goods queryGoods(voGoods voGDs) {
+	public Goods queryGoods(voGoods voGoods, String strMainImagePath) {
 		strSQL = "";
 		strSQL1 = "";
 		strSQL2 = "";
 		int intMainPage = 0; // 指定頁數
 		int intShowPage = 0; // 每頁筆數
-		if (voGDs.getStrAction().equals("List")) {
-			intMainPage = Integer.parseInt(voGDs.getStrMainPage().equals("") ? "1" : voGDs.getStrMainPage());
-			intShowPage = Integer.parseInt(voGDs.getStrShowPage().equals("") ? "10" : voGDs.getStrShowPage());
-		} else if (voGDs.getStrAction().equals("Detail")) {
+		if (voGoods.getStrAction().equals("List")) {
+			intMainPage = Integer.parseInt(voGoods.getStrMainPage().equals("") ? "1" : voGoods.getStrMainPage());
+			intShowPage = Integer.parseInt(voGoods.getStrShowPage().equals("") ? "10" : voGoods.getStrShowPage());
+		} else if (voGoods.getStrAction().equals("Detail")) {
 			intMainPage = 1;
 			intShowPage = 1;
 		} else { // 防呆
@@ -61,22 +62,24 @@ public class BackEndDao {
 		int intStartSeq = intEndSeq - intShowPage + 1;
 		// querySQL
 		strSQL = " ";
-		strSQL += !voGDs.getTxtSearchGoodsID().equals("") ? " AND GOODS_ID = " + voGDs.getTxtSearchGoodsID() + " " : "";
-		strSQL += !(voGDs.getTxtSearchGoodsName().equals(""))
-				? " AND UPPER(GOODS_NAME) LIKE UPPER('%" + voGDs.getTxtSearchGoodsName() + "%') "
+		strSQL += !voGoods.getTxtSearchGoodsID().equals("") ? " AND GOODS_ID = " + voGoods.getTxtSearchGoodsID() + " "
 				: "";
-		if (!(voGDs.getTxtSearchPriceDown().equals("")) && !(voGDs.getTxtSearchPriceUp().equals(""))) {
-			strSQL += " AND PRICE BETWEEN " + voGDs.getTxtSearchPriceDown() + " AND " + voGDs.getTxtSearchPriceUp() + "";
-		} else if ((voGDs.getTxtSearchPriceDown().equals("")) && !(voGDs.getTxtSearchPriceUp().equals(""))) {
-			strSQL += " AND PRICE < " + voGDs.getTxtSearchPriceUp() + " ";
-		} else if (!(voGDs.getTxtSearchPriceDown().equals("")) && (voGDs.getTxtSearchPriceUp().equals(""))) {
-			strSQL += " AND PRICE > " + voGDs.getTxtSearchPriceDown() + " ";
+		strSQL += !(voGoods.getTxtSearchGoodsName().equals(""))
+				? " AND UPPER(GOODS_NAME) LIKE UPPER('%" + voGoods.getTxtSearchGoodsName() + "%') "
+				: "";
+		if (!(voGoods.getTxtSearchPriceDown().equals("")) && !(voGoods.getTxtSearchPriceUp().equals(""))) {
+			strSQL += " AND PRICE BETWEEN " + voGoods.getTxtSearchPriceDown() + " AND " + voGoods.getTxtSearchPriceUp()
+					+ "";
+		} else if ((voGoods.getTxtSearchPriceDown().equals("")) && !(voGoods.getTxtSearchPriceUp().equals(""))) {
+			strSQL += " AND PRICE < " + voGoods.getTxtSearchPriceUp() + " ";
+		} else if (!(voGoods.getTxtSearchPriceDown().equals("")) && (voGoods.getTxtSearchPriceUp().equals(""))) {
+			strSQL += " AND PRICE > " + voGoods.getTxtSearchPriceDown() + " ";
 		}
-		strSQL += !(voGDs.getTxtSearchGoodsQuantityDown().equals(""))
-				? " AND QUANTITY <= " + Integer.parseInt(voGDs.getTxtSearchGoodsQuantityDown()) + " "
+		strSQL += !(voGoods.getTxtSearchGoodsQuantityDown().equals(""))
+				? " AND QUANTITY <= " + Integer.parseInt(voGoods.getTxtSearchGoodsQuantityDown()) + " "
 				: "";
-		strSQL += !(voGDs.getDdlSearchStatus().equals("")) ? " AND STATUS = " + voGDs.getDdlSearchStatus() : "";
-		strSQL += !(voGDs.getDdlSearchOrderBy().equals("")) ? " ORDER BY PRICE " + voGDs.getDdlSearchOrderBy() : "";
+		strSQL += !(voGoods.getDdlSearchStatus().equals("")) ? " AND STATUS = " + voGoods.getDdlSearchStatus() : "";
+		strSQL += !(voGoods.getDdlSearchOrderBy().equals("")) ? " ORDER BY PRICE " + voGoods.getDdlSearchOrderBy() : "";
 		// 條件 結果
 		strSQL = "SELECT ROWNUM NUM_ID, GOODS_ID, GOODS_NAME, PRICE, QUANTITY, IMAGE_NAME, STATUS FROM BEVERAGE_GOODS WHERE GOODS_ID IS NOT NULL "
 				+ strSQL;
@@ -103,6 +106,9 @@ public class BackEndDao {
 					goods.setGoodsImageName(rs.getString("ImageName")); // 商品圖片名稱
 					goods.setStatus(rs.getString("Status")); // 商品狀態(1:上架、0:下架)
 					goods.setStatusName(rs.getString("StatusName")); // 商品狀態(1:上架、0:下架)
+					goods.setStrImagePath((rs.getString("ImageName") != ""
+							? (strMainImagePath + "/" + rs.getString("ImageName"))
+							: (strMainImagePath + "/" + "nothing.jpg")));
 					gd.add(goods); //
 					listgd.setListGoods(gd);
 				}
@@ -144,15 +150,15 @@ public class BackEndDao {
 			// Insert SQL
 			strSQL = "INSERT INTO BEVERAGE_GOODS (GOODS_ID, GOODS_NAME, PRICE, QUANTITY, IMAGE_NAME, STATUS) VALUES (BEVERAGE_GOODS_SEQ.NEXTVAL, ?, ?, ?, ?, ?)";
 			// Step2:Create prepareStatement For SQL
+			ResultMessage rm = new ResultMessage();
 			try (PreparedStatement pstmt = conn.prepareStatement(strSQL, cols)) {
 				// Step3:將"資料欄位編號"、"資料值"作為引數傳入
 				pstmt.setString(1, goods.getTxtGoodsName()); // 商品名稱
 				pstmt.setString(2, goods.getTxtGoodsPrice()); // 商品價格
 				pstmt.setString(3, goods.getTxtGoodsQuantity()); // 商品庫存量
-				pstmt.setString(4, goods.getTxtUpdateGoodsImage()); // 商品圖片名稱
+				pstmt.setString(4, goods.getTxtUpdateGoodsImage().getFileName()); // 商品圖片名稱
 				pstmt.setString(5, goods.getCkbStatus()); // 商品狀態(1:上架、0:下架)
 				// Step4:Execute SQL
-				ResultMessage rm = new ResultMessage();
 				// 判斷新增成功/失敗
 				if (pstmt.executeUpdate() > 0) {
 					// 取對應的自增主鍵值
@@ -168,15 +174,20 @@ public class BackEndDao {
 					} else {
 						rm.setStrResult("E");
 						rm.setStrMessage("新增商品失敗!");
+						rtnGoods.setResultMessage(rm);
 						conn.rollback();
 					}
 				} else {
 					rm.setStrResult("E");
 					rm.setStrMessage("新增商品失敗!");
+					rtnGoods.setResultMessage(rm);
 					conn.rollback();
 				}
 			} catch (SQLException e) {
 				// 若發生錯誤則資料 rollback(回滾)
+				rm.setStrResult("E");
+				rm.setStrMessage("新增商品失敗!");
+				rtnGoods.setResultMessage(rm);
 				conn.rollback();
 				throw e;
 			}
@@ -200,7 +211,7 @@ public class BackEndDao {
 		try (Connection conn = DBConnectionFactory.getOracleDBConnection()) {
 			conn.setAutoCommit(false);// 設置交易不自動提交
 			// Update SQL
-			boolImage = !goods.getTxtUpdateGoodsImage().equals("");
+			boolImage = !goods.getTxtUpdateGoodsImage().getFileName().equals("");
 			strSQL = boolImage ? "IMAGE_NAME = ?," : "";
 			strSQL = " GOODS_NAME = ?, PRICE = ?, QUANTITY = ?, " + strSQL + " STATUS = ? ";
 
@@ -210,7 +221,7 @@ public class BackEndDao {
 				pstmt.setString(2, goods.getTxtGoodsPrice()); // 商品價格
 				pstmt.setString(3, goods.getTxtGoodsQuantity()); // 商品庫存量
 				if (boolImage) {
-					pstmt.setString(4, goods.getTxtUpdateGoodsImage()); // 圖片名稱
+					pstmt.setString(4, goods.getTxtUpdateGoodsImage().getFileName()); // 圖片名稱
 					pstmt.setString(5, goods.getCkbStatus()); // 商品狀態(1:上架、0:下架)
 					pstmt.setString(6, goods.getHidPrimaryID()); // 商品編號
 				} else {
@@ -247,7 +258,7 @@ public class BackEndDao {
 	 * @param goodsID
 	 * @return boolean
 	 */
-	public boolean deleteGoods(String strID) {
+	public boolean deleteGoods(voGoodsDelete voGoods) {
 		boolean deleteSuccess = false;
 		// Step1:取得Connection
 		try (Connection conn = DBConnectionFactory.getOracleDBConnection()) {
@@ -258,7 +269,7 @@ public class BackEndDao {
 			// Step2:Create prepareStatement For SQL
 			try (PreparedStatement stmt = conn.prepareStatement(strSQL)) {
 				// Step3:將"資料欄位編號"、"資料值"作為引數傳入
-				stmt.setString(1, strID);
+				stmt.setString(1, voGoods.getHidPrimaryID());
 				// Step5:交易提交
 				deleteSuccess = stmt.executeUpdate() == 1 ? true : false;
 				if (deleteSuccess)

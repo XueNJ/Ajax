@@ -15,7 +15,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 import com.training.dao.MemberDao;
-import com.training.formbean.MemberForm;
+import com.training.formbean.FrontendForm;
 import com.training.model.Member;
 import com.training.model.ResultMessage;
 import com.training.service.MemberService;
@@ -29,7 +29,7 @@ public class LoginAction extends DispatchAction {
 
 	private MemberService memberService = MemberService.getInstance();
 
-	MemberForm fmMember;
+	FrontendForm fmMember;
 
 	/**
 	 * 成功登入預設頁面
@@ -70,7 +70,7 @@ public class LoginAction extends DispatchAction {
 
 		HttpSession session = request.getSession();
 
-		fmMember = (MemberForm) form;
+		fmMember = (FrontendForm) form;
 
 		Member voMember = new Member();
 
@@ -117,7 +117,7 @@ public class LoginAction extends DispatchAction {
 
 		String strFwd = "";
 
-		fmMember = (MemberForm) form;
+		fmMember = (FrontendForm) form;
 
 		Member voMember = new Member();
 

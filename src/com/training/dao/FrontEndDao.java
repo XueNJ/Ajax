@@ -40,7 +40,7 @@ public class FrontEndDao {
 	 * @param endRowNo
 	 * @return Set(Goods)
 	 */
-	public Goods searchGoods(voMemberSearch voMemberSearch) {
+	public Goods searchGoods(voMemberSearch voMemberSearch, String strMainImagePath) {
 		int intMainPage = 0; // 指定頁數
 		int intShowPage = 0; // 每頁筆數
 		intMainPage = Integer
@@ -66,17 +66,20 @@ public class FrontEndDao {
 				ResultSet rs = stmt.executeQuery()) {
 			// Step3:Process Result
 			if (rs.getFetchSize() > 0) {
-				Set<Good> gds = new LinkedHashSet<Good>();
+				Set<Good> goods = new LinkedHashSet<Good>();
 				while (rs.next()) {
-					Good gd = new Good();
-					gd.setGoodsID(rs.getBigDecimal("GOODS_ID")); // 商品編號
-					gd.setGoodsName(rs.getString("GOODS_NAME")); // 商品名稱
-					gd.setGoodsPrice(rs.getInt("PRICE")); // 商品價格
-					gd.setGoodsQuantity(rs.getInt("QUANTITY")); // 商品庫存量
-					gd.setGoodsImageName(rs.getString("IMAGE_NAME")); // 商品圖片名稱
-					gd.setStatus(rs.getString("STATUS")); // 商品狀態(1:上架、0:下架)
-					gds.add(gd);
-					listgd.setListGoods(gds);
+					Good good = new Good();
+					good.setGoodsID(rs.getBigDecimal("GOODS_ID")); // 商品編號
+					good.setGoodsName(rs.getString("GOODS_NAME")); // 商品名稱
+					good.setGoodsPrice(rs.getInt("PRICE")); // 商品價格
+					good.setGoodsQuantity(rs.getInt("QUANTITY")); // 商品庫存量
+					good.setGoodsImageName(rs.getString("IMAGE_NAME")); // 商品圖片名稱
+					good.setStatus(rs.getString("STATUS")); // 商品狀態(1:上架、0:下架)
+					good.setStrImagePath((rs.getString("IMAGE_NAME") != ""
+							? (strMainImagePath + "/" + rs.getString("IMAGE_NAME"))
+							: (strMainImagePath + "/" + "nothing.jpg")));
+					goods.add(good);
+					listgd.setListGoods(goods);
 				}
 			}
 		} catch (SQLException e) {

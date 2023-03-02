@@ -30,8 +30,8 @@ public class FrontendService extends DispatchAction {
 	 * 
 	 * @return Set(Goods)
 	 */
-	public Goods searchGoods(voMemberSearch voMemberSearch) {
-		return ftDao.searchGoods(voMemberSearch);
+	public Goods searchGoods(voMemberSearch voMemberSearch, String strMainImagePath) {
+		return ftDao.searchGoods(voMemberSearch, strMainImagePath);
 	}
 
 	/**

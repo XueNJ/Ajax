@@ -10,6 +10,7 @@ import com.training.model.GoodsUpdate;
 import com.training.model.Orders;
 import com.training.vo.voGoods;
 import com.training.vo.voGoodsAdd;
+import com.training.vo.voGoodsDelete;
 import com.training.vo.voGoodsUpdate;
 import com.training.vo.voGoodsOrder;
 
@@ -33,8 +34,8 @@ public class BackendService extends DispatchAction {
 	 * 
 	 * @return GoodsLIst
 	 */
-	public Goods queryGoods(voGoods voGood) {
-		return bkDao.queryGoods(voGood);
+	public Goods queryGoods(voGoods voGood, String strMainImagePath) {
+		return bkDao.queryGoods(voGood, strMainImagePath);
 	}
 
 	/**
@@ -63,8 +64,8 @@ public class BackendService extends DispatchAction {
 	 * @param goodsID
 	 * @return boolean
 	 */
-	public boolean deleteGoods(String strID) {
-		return bkDao.deleteGoods(strID);
+	public boolean deleteGoods(voGoodsDelete voGoods) {
+		return bkDao.deleteGoods(voGoods);
 	}
 
 	/**

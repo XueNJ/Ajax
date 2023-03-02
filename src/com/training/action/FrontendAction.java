@@ -20,7 +20,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 
-import com.training.formbean.MemberForm;
+import com.training.formbean.FrontendForm;
 import com.training.model.Good;
 import com.training.model.Goods;
 import com.training.model.Member;
@@ -41,7 +41,7 @@ public class FrontendAction extends DispatchAction {
 
 	private FrontendService frontEndDao = FrontendService.getInstance();
 
-	MemberForm fbMember;
+	FrontendForm fbMember;
 
 	/**
 	 * 前臺商品
@@ -71,16 +71,18 @@ public class FrontendAction extends DispatchAction {
 	public ActionForward searchGoods(ActionMapping mapping, ActionForm form, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 
-		fbMember = (MemberForm) form;
+		fbMember = (FrontendForm) form;
 
 		voMemberSearch voCustomerSearch = new voMemberSearch();
 
 		BeanUtils.copyProperties(voCustomerSearch, fbMember);
+		
+		String strMainImagePath= getServlet().getInitParameter("GoodsImgPath");
 
-		Goods gds = frontEndDao.searchGoods(voCustomerSearch);
+		Goods goods = frontEndDao.searchGoods(voCustomerSearch, strMainImagePath);
 
 		PrintWriter out = response.getWriter();
-		out.print(JSONArray.fromObject(gds));
+		out.print(JSONArray.fromObject(goods));
 		out.flush();
 		out.close();
 
@@ -96,7 +98,7 @@ public class FrontendAction extends DispatchAction {
 	public ActionForward buyGoods(ActionMapping mapping, ActionForm form, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 
-		fbMember = (MemberForm) form;
+		fbMember = (FrontendForm) form;
 
 		voMemberBuy voMemberBuy = new voMemberBuy();
 
@@ -261,7 +263,7 @@ public class FrontendAction extends DispatchAction {
 
 		boolean boolCheckGoods = true;
 
-		fbMember = (MemberForm) form;
+		fbMember = (FrontendForm) form;
 
 		ShoppingCarGoods voShoppingCarGoods = new ShoppingCarGoods();
 
@@ -345,7 +347,7 @@ public class FrontendAction extends DispatchAction {
 	public ActionForward removeCartGoods(ActionMapping mapping, ActionForm form, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 
-		fbMember = (MemberForm) form;
+		fbMember = (FrontendForm) form;
 
 		ShoppingCarGoods voShoppingCarGoods = new ShoppingCarGoods();
 
